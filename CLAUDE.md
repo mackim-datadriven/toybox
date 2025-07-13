@@ -49,11 +49,50 @@ npm run deploy
 npm run test-production
 ```
 
+### Testing the Development Server
+
+When testing the development server, run it as a background process that logs to `.local/devserver.log`:
+
+```bash
+# Create .local directory if it doesn't exist
+mkdir -p .local
+
+# Run dev server in background with logging
+npm run dev > .local/devserver.log 2>&1 &
+```
+
 ## Configuration
 
 **TOYBOX_CONFIG.json**: Site configuration (title, description, theme, layout)
 **components.json**: shadcn/ui configuration
 **vite.config.ts**: Build configuration with GitHub Pages support
+**github.config.json**: GitHub deployment configuration (username and repository name)
+
+### GitHub Deployment Configuration
+
+Before deploying to GitHub Pages:
+
+1. Check if `github.config.json` exists and is properly configured
+2. If the file doesn't exist or contains placeholder values (`YOUR_GITHUB_USERNAME` or `YOUR_REPO_NAME`):
+   - Ask the user for their GitHub username and repository name
+   - Create/update `github.config.json` with these values
+   - Run `npm run update-config` to apply the configuration to all relevant files
+3. The configuration updates:
+   - package.json (homepage and repository URL)
+   - vite.config.ts (base path)
+   - index.html (title and base URL)
+   - public/404.html (title)
+   - src/components/AboutPage.tsx (GitHub link)
+   - .github/workflows/deploy.yml (BASE_URL)
+
+Example `github.config.json`:
+```json
+{
+  "username": "myusername",
+  "repository": "my-toybox",
+  "description": "Configuration for GitHub deployment. Update these values when using this template."
+}
+```
 
 ## Path Resolution
 

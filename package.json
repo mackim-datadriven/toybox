@@ -16,7 +16,8 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "test-production": "vite preview --base=/template-example/"
+    "test-production": "vite preview --base=/template-example/",
+    "update-config": "node scripts/update-config.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

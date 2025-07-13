@@ -24,6 +24,10 @@ dist-ssr
 !postcss.config.js
 !tailwind.config.mjs
 !src/vite-env.d.ts
+!scripts/update-config.js
+
+# GitHub configuration (user-specific)
+github.config.json
 
 # Editor directories and files
 .vscode/*
