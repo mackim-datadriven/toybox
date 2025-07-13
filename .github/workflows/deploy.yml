@@ -8,6 +8,7 @@ on:
       - 'TOYBOX_CONFIG.json'
       - 'package.json'
       - 'src/**'
+      - 'vite.config.ts'
       - '!src/artifacts/.gitkeep'
   workflow_dispatch:
 
