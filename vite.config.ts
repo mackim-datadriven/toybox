@@ -5,10 +5,12 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
   const isProduction = command === 'build';
+  // Use BASE_URL from environment if set, otherwise fallback to template-example
+  const baseUrl = process.env.BASE_URL || '/template-example/';
   
   return {
     // Use base path only in production (GitHub Pages)
-    base: isProduction ? '/template-example/' : '/',
+    base: isProduction ? baseUrl : '/',
     plugins: [
       react(),
     ],
