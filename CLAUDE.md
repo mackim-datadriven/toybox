@@ -68,7 +68,7 @@ npm run dev > .local/devserver.log 2>&1 &
 **TOYBOX_CONFIG.json**: Site configuration (title, description, theme, layout)
 **components.json**: shadcn/ui configuration
 **vite.config.ts**: Build configuration with GitHub Pages support
-**github.config.json**: GitHub deployment configuration (username and repository name)
+**github.config.json**: GitHub deployment configuration (username and repository name) - should be committed after setup
 
 ### Centralized Configuration System
 

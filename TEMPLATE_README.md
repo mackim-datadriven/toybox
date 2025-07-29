@@ -123,12 +123,16 @@ nano github.config.json
 
 # Apply configuration to all files
 npm run update-config
+
+# Commit the configuration to your repository
+git add github.config.json
+git commit -m "Configure GitHub deployment settings"
 ```
 
 ### Configuration Files
 
 **TOYBOX_CONFIG.json** - Site-wide configuration (title, description, theme)
-**github.config.json** - GitHub deployment configuration (git-ignored)
+**github.config.json** - GitHub deployment configuration (should be committed)
 
 Example `github.config.json`:
 ```json

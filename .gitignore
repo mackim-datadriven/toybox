@@ -29,8 +29,6 @@ dist-ssr
 !scripts/config-loader.js
 !scripts/config-loader.cjs
 
-# GitHub configuration (user-specific)
-github.config.json
 
 # Editor directories and files
 .vscode/*

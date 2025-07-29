@@ -34,7 +34,7 @@ This is the primary configuration file for your TOYBOX deployment:
 }
 ```
 
-**Important**: This file is `.gitignore`d to prevent accidental commits of personal configuration.
+**Important**: This file should be committed to your repository after configuration to ensure GitHub Actions can access it during deployment.
 
 ### 2. Configuration System Components
 
@@ -225,7 +225,7 @@ npm run validate-setup
    - Check if environment variables are overriding your config
 
 3. **GitHub Actions failing**
-   - Ensure `github.config.json` is not committed (should be in `.gitignore`)
+   - Ensure `github.config.json` is committed to your repository
    - Verify the repository has GitHub Pages enabled
    - Check that the workflow has necessary permissions
 
@@ -244,7 +244,7 @@ GITHUB_USERNAME=test GITHUB_REPOSITORY=test-repo node scripts/config-loader.js
 
 ## Best Practices
 
-1. **Never commit `github.config.json`** - It contains deployment-specific configuration
+1. **Always commit `github.config.json`** after configuration - GitHub Actions needs access to it
 2. **Always run `update-config`** after modifying configuration
 3. **Use environment variables** for CI/CD overrides
 4. **Validate before deploying** to catch configuration issues early
