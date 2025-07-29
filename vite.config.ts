@@ -17,7 +17,9 @@ function loadGitHubConfig() {
       siteDescription: 'A collection of Claude-generated artifacts',
       showGitHubLink: true,
       defaultTheme: 'auto'
-    }
+    },
+    isConfigured: false,
+    baseUrl: '/'
   };
   
   // Load from file if exists
@@ -40,7 +42,8 @@ function loadGitHubConfig() {
     config.username = process.env.GITHUB_USERNAME;
   }
   if (process.env.GITHUB_REPOSITORY) {
-    config.repository = process.env.GITHUB_REPOSITORY;
+    // Extract just the repo name from "owner/repo" format
+    config.repository = process.env.GITHUB_REPOSITORY.split('/')[1];
   }
   
   // Compute derived values
