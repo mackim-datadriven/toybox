@@ -26,6 +26,8 @@ dist-ssr
 !src/vite-env.d.ts
 !scripts/update-config.js
 !scripts/validate-setup.js
+!scripts/config-loader.js
+!scripts/config-loader.cjs
 
 # GitHub configuration (user-specific)
 github.config.json

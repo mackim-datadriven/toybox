@@ -3,35 +3,73 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import fs from 'fs'
 
+// Inline config loading to avoid module issues
+function loadGitHubConfig() {
+  const configPath = path.join(__dirname, 'github.config.json');
+  
+  // Default configuration
+  let config = {
+    username: 'YOUR_GITHUB_USERNAME',
+    repository: 'YOUR_REPO_NAME',
+    description: 'Configuration for GitHub deployment.',
+    customization: {
+      siteName: 'TOYBOX',
+      siteDescription: 'A collection of Claude-generated artifacts',
+      showGitHubLink: true,
+      defaultTheme: 'auto'
+    }
+  };
+  
+  // Load from file if exists
+  if (fs.existsSync(configPath)) {
+    try {
+      const fileConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      config = { ...config, ...fileConfig };
+      
+      // Ensure customization object exists with defaults
+      if (fileConfig.customization) {
+        config.customization = { ...config.customization, ...fileConfig.customization };
+      }
+    } catch (error) {
+      console.warn('Warning: Could not parse github.config.json:', error.message);
+    }
+  }
+  
+  // Override with environment variables if present
+  if (process.env.GITHUB_USERNAME) {
+    config.username = process.env.GITHUB_USERNAME;
+  }
+  if (process.env.GITHUB_REPOSITORY) {
+    config.repository = process.env.GITHUB_REPOSITORY;
+  }
+  
+  // Compute derived values
+  config.isConfigured = !config.username.includes('YOUR_') && !config.repository.includes('YOUR_');
+  config.baseUrl = config.isConfigured ? `/${config.repository}/` : '/';
+  
+  return config;
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
   const isProduction = command === 'build';
+  const config = loadGitHubConfig();
   
-  // Priority: ENV var > github.config.json > fallback
+  // Determine base URL
   let baseUrl = '/';
-  
   if (isProduction) {
-    // Try environment variable first
-    baseUrl = process.env.BASE_URL;
-    
-    // Fallback to github.config.json
-    if (!baseUrl) {
-      try {
-        const githubConfig = JSON.parse(
-          fs.readFileSync('./github.config.json', 'utf8')
-        );
-        baseUrl = `/${githubConfig.repository}/`;
-      } catch {
-        // Final fallback - will need manual configuration
-        baseUrl = '/CONFIGURE_BASE_URL/';
-        console.warn('⚠️  No BASE_URL configured. Run npm run update-config after setting up github.config.json');
-      }
-    }
+    // Priority: ENV var > github.config.json
+    baseUrl = process.env.BASE_URL || config.baseUrl;
   }
   
   return {
     // Use base path only in production (GitHub Pages)
     base: baseUrl,
+    // Define environment variables for runtime use
+    define: {
+      'import.meta.env.VITE_GITHUB_USERNAME': JSON.stringify(config.username),
+      'import.meta.env.VITE_GITHUB_REPOSITORY': JSON.stringify(config.repository),
+    },
     plugins: [
       react(),
     ],

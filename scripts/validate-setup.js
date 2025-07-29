@@ -2,6 +2,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { loadConfig } from './config-loader.js';
 
 const checks = [
   {
@@ -13,8 +14,8 @@ const checks = [
     name: 'GitHub Config Valid',
     check: () => {
       try {
-        const config = JSON.parse(fs.readFileSync('./github.config.json', 'utf8'));
-        return !config.username.includes('YOUR_') && !config.repository.includes('YOUR_');
+        const config = loadConfig();
+        return config.isConfigured;
       } catch { return false; }
     },
     fix: 'Edit github.config.json with your actual GitHub username and repository name'
