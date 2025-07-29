@@ -1,16 +1,37 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import fs from 'fs'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
   const isProduction = command === 'build';
-  // Use BASE_URL from environment if set, otherwise fallback to template-example
-  const baseUrl = process.env.BASE_URL || '/template-example/';
+  
+  // Priority: ENV var > github.config.json > fallback
+  let baseUrl = '/';
+  
+  if (isProduction) {
+    // Try environment variable first
+    baseUrl = process.env.BASE_URL;
+    
+    // Fallback to github.config.json
+    if (!baseUrl) {
+      try {
+        const githubConfig = JSON.parse(
+          fs.readFileSync('./github.config.json', 'utf8')
+        );
+        baseUrl = `/${githubConfig.repository}/`;
+      } catch {
+        // Final fallback - will need manual configuration
+        baseUrl = '/CONFIGURE_BASE_URL/';
+        console.warn('⚠️  No BASE_URL configured. Run npm run update-config after setting up github.config.json');
+      }
+    }
+  }
   
   return {
     // Use base path only in production (GitHub Pages)
-    base: isProduction ? baseUrl : '/',
+    base: baseUrl,
     plugins: [
       react(),
     ],

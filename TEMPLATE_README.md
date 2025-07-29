@@ -4,6 +4,22 @@ A React-based portfolio/gallery application for showcasing Claude-generated arti
 
 ## 🚀 Using This Template
 
+## 🤖 MCP Integration (Recommended)
+
+This template is designed to work seamlessly with the TOYBOX MCP server:
+
+1. Install the TOYBOX MCP server in Claude Desktop
+2. Use the command: "Initialize a new TOYBOX repository called 'my-portfolio'"
+3. The MCP server will automatically:
+   - Clone this template
+   - Configure all GitHub settings
+   - Set up deployment workflows
+   - Enable GitHub Pages
+
+## 🔧 Manual Setup (Alternative)
+
+If not using MCP integration:
+
 ### 1. Create your repository
 
 Click the "Use this template" button on GitHub to create your own repository from this template.
@@ -22,7 +38,13 @@ cp github.config.json.example github.config.json
 # Example:
 # {
 #   "username": "myusername",
-#   "repository": "my-toybox"
+#   "repository": "my-toybox",
+#   "customization": {
+#     "siteName": "My Portfolio",
+#     "siteDescription": "My collection of Claude artifacts",
+#     "showGitHubLink": true,
+#     "defaultTheme": "auto"
+#   }
 # }
 
 # Install dependencies
@@ -97,8 +119,30 @@ GitHub deployment configuration. This file is git-ignored and specific to each d
 ```json
 {
   "username": "YOUR_GITHUB_USERNAME",
-  "repository": "YOUR_REPO_NAME"
+  "repository": "YOUR_REPO_NAME",
+  "description": "Configuration for GitHub deployment. Update these values when using this template.",
+  "customization": {
+    "siteName": "TOYBOX",
+    "siteDescription": "A collection of Claude-generated artifacts",
+    "showGitHubLink": true,
+    "defaultTheme": "auto"
+  }
 }
+```
+
+### Validation and Setup
+
+Use these npm scripts to validate your setup:
+
+```bash
+# Validate current setup
+npm run validate-setup
+
+# Set up a new configuration from template
+npm run setup
+
+# Validate config before building
+npm run validate-config
 ```
 
 ## 🚀 Deployment

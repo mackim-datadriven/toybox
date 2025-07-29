@@ -25,6 +25,7 @@ dist-ssr
 !tailwind.config.mjs
 !src/vite-env.d.ts
 !scripts/update-config.js
+!scripts/validate-setup.js
 
 # GitHub configuration (user-specific)
 github.config.json

@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://isnbh0.github.io/template-example",
+  "homepage": "https://testuser.github.io/test-toybox",
   "repository": {
     "type": "git",
-    "url": "https://github.com/isnbh0/template-example.git"
+    "url": "https://github.com/testuser/test-toybox.git"
   },
   "scripts": {
     "dev": "vite",
@@ -16,8 +16,12 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "test-production": "vite preview --base=/template-example/",
-    "update-config": "node scripts/update-config.js"
+    "test-production": "vite preview --base=/test-toybox/",
+    "update-config": "node scripts/update-config.js",
+    "validate-config": "node -e \"const cfg = require('./github.config.json'); if(cfg.username.includes('YOUR_') || cfg.repository.includes('YOUR_')) throw new Error('Please configure github.config.json')\"",
+    "prebuild": "npm run validate-config",
+    "setup": "cp github.config.json.example github.config.json && echo 'Please edit github.config.json and run npm run update-config'",
+    "validate-setup": "node scripts/validate-setup.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

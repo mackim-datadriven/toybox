@@ -13,6 +13,44 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 const { username, repository } = config;
 
+// Validation function
+function validateConfig(config) {
+  const required = ['username', 'repository'];
+  for (const field of required) {
+    if (!config[field] || config[field].includes('YOUR_')) {
+      throw new Error(`Invalid ${field}: ${config[field]}. Please update github.config.json with actual values.`);
+    }
+  }
+}
+
+// Function to update TOYBOX_CONFIG.json with customization options
+function updateToyboxConfig(config) {
+  const toyboxConfigPath = path.join(__dirname, '..', 'TOYBOX_CONFIG.json');
+  
+  if (config.customization) {
+    const toyboxConfig = JSON.parse(fs.readFileSync(toyboxConfigPath, 'utf8'));
+    
+    if (config.customization.siteName) {
+      toyboxConfig.title = config.customization.siteName;
+    }
+    if (config.customization.siteDescription) {
+      toyboxConfig.description = config.customization.siteDescription;
+    }
+    if (config.customization.defaultTheme) {
+      toyboxConfig.theme = config.customization.defaultTheme;
+    }
+    
+    fs.writeFileSync(toyboxConfigPath, JSON.stringify(toyboxConfig, null, 2) + '\n');
+    console.log('✅ Updated TOYBOX_CONFIG.json with customizations');
+  }
+}
+
+// Validate configuration
+validateConfig(config);
+
+// Update TOYBOX configuration with customizations
+updateToyboxConfig(config);
+
 // Update package.json
 const packagePath = path.join(__dirname, '..', 'package.json');
 const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
