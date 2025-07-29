@@ -110,29 +110,52 @@ export { default } from './component';
 
 ## ⚙️ Configuration
 
-### TOYBOX_CONFIG.json
-Site-wide configuration including title, description, theme, and layout options.
+This template uses a centralized configuration system to manage all deployment settings. See [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) for detailed documentation.
 
-### github.config.json
-GitHub deployment configuration. This file is git-ignored and specific to each deployment.
+### Quick Setup
 
+```bash
+# Copy example configuration
+cp github.config.json.example github.config.json
+
+# Edit with your GitHub details
+nano github.config.json
+
+# Apply configuration to all files
+npm run update-config
+```
+
+### Configuration Files
+
+**TOYBOX_CONFIG.json** - Site-wide configuration (title, description, theme)
+**github.config.json** - GitHub deployment configuration (git-ignored)
+
+Example `github.config.json`:
 ```json
 {
-  "username": "YOUR_GITHUB_USERNAME",
-  "repository": "YOUR_REPO_NAME",
-  "description": "Configuration for GitHub deployment. Update these values when using this template.",
+  "username": "your-username",
+  "repository": "your-repo-name",
   "customization": {
-    "siteName": "TOYBOX",
-    "siteDescription": "A collection of Claude-generated artifacts",
+    "siteName": "My Portfolio",
+    "siteDescription": "My collection of Claude artifacts",
     "showGitHubLink": true,
     "defaultTheme": "auto"
   }
 }
 ```
 
-### Validation and Setup
+### Environment Overrides
 
-Use these npm scripts to validate your setup:
+For advanced deployments:
+```bash
+# Custom base URL
+BASE_URL=/custom-path/ npm run build
+
+# Override GitHub config
+GITHUB_USERNAME=user GITHUB_REPOSITORY=repo npm run build
+```
+
+### Validation Scripts
 
 ```bash
 # Validate current setup
@@ -141,7 +164,7 @@ npm run validate-setup
 # Set up a new configuration from template
 npm run setup
 
-# Validate config before building
+# Validate config before building (runs automatically in prebuild)
 npm run validate-config
 ```
 

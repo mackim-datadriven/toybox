@@ -63,10 +63,32 @@ npm run dev > .local/devserver.log 2>&1 &
 
 ## Configuration
 
+### Configuration Files
+
 **TOYBOX_CONFIG.json**: Site configuration (title, description, theme, layout)
 **components.json**: shadcn/ui configuration
 **vite.config.ts**: Build configuration with GitHub Pages support
 **github.config.json**: GitHub deployment configuration (username and repository name)
+
+### Centralized Configuration System
+
+The template uses a centralized configuration system to manage all deployment-related constants. Configuration priority:
+1. Environment variables (highest priority)
+2. `github.config.json` file
+3. Default values (lowest priority)
+
+**Key Configuration Components:**
+- `scripts/config-loader.js` - ESM module for Node.js scripts
+- `scripts/config-loader.cjs` - CommonJS module for compatibility
+- `src/lib/config.ts` - TypeScript module for frontend runtime
+- `vite.config.ts` - Contains inline config loading for build process
+
+**Configuration Validation:**
+- `npm run validate-config` - Validates configuration before building
+- `npm run validate-setup` - Comprehensive setup validation
+- Build process automatically validates configuration via prebuild hook
+
+For detailed configuration documentation, see `docs/CONFIGURATION.md`.
 
 ### GitHub Deployment Configuration
 
@@ -79,25 +101,40 @@ Before deploying to GitHub Pages:
    - Run `npm run update-config` to apply the configuration to all relevant files
 3. The configuration updates:
    - package.json (homepage and repository URL)
-   - vite.config.ts (base path)
-   - index.html (title and base URL)
+   - index.html (title)
    - public/404.html (title)
    - src/components/AboutPage.tsx (GitHub link)
-   - .github/workflows/deploy.yml (BASE_URL)
+   - TOYBOX_CONFIG.json (with customization options)
+   - Note: vite.config.ts and .github/workflows/deploy.yml now use the centralized config system
 
 Example `github.config.json`:
 ```json
 {
   "username": "myusername",
   "repository": "my-toybox",
-  "description": "Configuration for GitHub deployment. Update these values when using this template."
+  "description": "Configuration for GitHub deployment.",
+  "customization": {
+    "siteName": "My Portfolio",
+    "siteDescription": "My collection of Claude artifacts",
+    "showGitHubLink": true,
+    "defaultTheme": "auto"
+  }
 }
+```
+
+**Environment Variable Overrides:**
+```bash
+# Override base URL
+BASE_URL=/custom-path/ npm run build
+
+# Override GitHub config
+GITHUB_USERNAME=user GITHUB_REPOSITORY=repo npm run build
 ```
 
 ## Path Resolution
 
 - `@/` and `src/` aliases resolve to `./src/`
-- Base path handling for GitHub Pages deployment (set to `/YOUR_REPO_NAME/` in production)
+- Base path handling for GitHub Pages deployment (automatically set from configuration)
 
 ## Artifact Development
 
