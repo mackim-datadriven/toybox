@@ -20,7 +20,7 @@
     "update-config": "node scripts/update-config.js",
     "validate-config": "node -e \"import('./scripts/config-loader.js').then(m => m.validateConfig())\"",
     "prebuild": "npm run validate-config",
-    "setup": "cp github.config.json.example github.config.json && echo 'Please edit github.config.json and run npm run update-config'",
+    "setup": "echo 'Please edit github.config.json with your GitHub username and repository, then run npm run update-config'",
     "validate-setup": "node scripts/validate-setup.js"
   },
   "dependencies": {

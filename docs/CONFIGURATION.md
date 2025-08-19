@@ -89,12 +89,7 @@ These values are automatically calculated based on your configuration:
 
 ### Initial Setup
 
-1. **Copy the example configuration:**
-   ```bash
-   cp github.config.json.example github.config.json
-   ```
-
-2. **Edit the configuration:**
+1. **Edit the configuration file:**
    ```json
    {
      "username": "yourusername",

@@ -8,7 +8,7 @@ const checks = [
   {
     name: 'GitHub Config Exists',
     check: () => fs.existsSync('./github.config.json'),
-    fix: 'Run: cp github.config.json.example github.config.json'
+    fix: 'Edit github.config.json with your GitHub username and repository'
   },
   {
     name: 'GitHub Config Valid',

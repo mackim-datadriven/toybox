@@ -31,9 +31,6 @@ Click the "Use this template" button on GitHub to create your own repository fro
 git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
 cd YOUR_REPO_NAME
 
-# Copy the example config
-cp github.config.json.example github.config.json
-
 # Edit github.config.json with your GitHub username and repository name
 # Example:
 # {
@@ -115,10 +112,18 @@ This template uses a centralized configuration system to manage all deployment s
 ### Quick Setup
 
 ```bash
-# Copy example configuration
-cp github.config.json.example github.config.json
+# Edit github.config.json with your GitHub details
+# Or create it if needed:
+echo '{
+  "username": "YOUR_USERNAME",
+  "repository": "YOUR_REPO_NAME",
+  "customization": {
+    "siteName": "My Portfolio",
+    "siteDescription": "My collection of Claude artifacts"
+  }
+}' > github.config.json
 
-# Edit with your GitHub details
+# Edit the existing file
 nano github.config.json
 
 # Apply configuration to all files
