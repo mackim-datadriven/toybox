@@ -79,7 +79,6 @@ The template uses a centralized configuration system to manage all deployment-re
 
 **Key Configuration Components:**
 - `scripts/config-loader.js` - ESM module for Node.js scripts
-- `scripts/config-loader.cjs` - CommonJS module for compatibility
 - `src/lib/config.ts` - TypeScript module for frontend runtime
 - `vite.config.ts` - Contains inline config loading for build process
 

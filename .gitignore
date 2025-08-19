@@ -1,5 +1,7 @@
 .specstory
 .dev.vars
+.local
+.claude/settings.local.json
 
 # Logs
 logs
@@ -27,7 +29,6 @@ dist-ssr
 !scripts/update-config.js
 !scripts/validate-setup.js
 !scripts/config-loader.js
-!scripts/config-loader.cjs
 
 
 # Editor directories and files

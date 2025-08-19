@@ -42,7 +42,6 @@ This is the primary configuration file for your TOYBOX deployment:
 - Used by Node.js scripts that support ES modules
 - Provides `loadConfig()`, `getBaseUrl()`, and `validateConfig()` functions
 
-#### `scripts/config-loader.cjs` (CommonJS Module)
 - Used for compatibility with tools that require CommonJS
 - Same functionality as the ESM version
 

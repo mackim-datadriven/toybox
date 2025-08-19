@@ -1,1 +1,0 @@
-../toybox-mcp-server/TOYBOX_TEMPLATE_CUSTOMIZATION_PLAN.md
