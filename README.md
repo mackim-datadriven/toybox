@@ -2,7 +2,7 @@
 
 A React-based portfolio/gallery application for showcasing Claude-generated artifacts. This template is designed to be deployed to GitHub Pages and serves as a starting point for creating personal artifact collections.
 
-> **Note for Template Users:** When initializing this template for your own use, replace this README.md with INSTANCE_README.md to provide a simpler, user-focused readme for your repository.
+> **Note for Template Users:** When initializing this template for your own use, replace this README.md with INSTANCE_README.md to provide a simpler, user-focused readme for your repository. Similarly, replace CLAUDE.md with INSTANCE_CLAUDE.md for artifact development guidance.
 
 ## 🚀 Using This Template
 
