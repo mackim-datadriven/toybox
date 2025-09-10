@@ -22,16 +22,47 @@ This template is designed to work seamlessly with the TOYBOX MCP server:
 
 If not using MCP integration:
 
-### 1. Create your repository
+### 1. Clone this template repository
 
+```bash
+# Clone the template repository directly
+git clone https://github.com/jhchoi/toybox-template.git
+cd toybox-template
+```
+
+### 2. Automated setup with Claude Code
+
+If you have [Claude Code](https://claude.ai/code) available:
+
+1. Open Claude Code in the repository directory
+2. Reference the `SETUP.md` file and ask Claude to run the complete setup
+3. Claude will automatically:
+   - Verify prerequisites (gh CLI and GitHub authentication)
+   - Get your GitHub username and ask for repository name
+   - Replace template files with instance versions
+   - Configure GitHub deployment settings
+   - Create a new GitHub repository
+   - Set up GitHub Pages
+   - Push your personalized repository
+
+**Example prompt:** "Please follow the instructions in SETUP.md to set up my toybox repository"
+
+### 3. Manual setup (without Claude Code)
+
+If you prefer manual setup:
+
+#### Create your repository
 Click the "Use this template" button on GitHub to create your own repository from this template.
 
-### 2. Clone and configure
-
+#### Clone and configure
 ```bash
 # Clone your new repository
 git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
 cd YOUR_REPO_NAME
+
+# Replace template files with instance versions
+mv README.INSTANCE.md README.md
+mv CLAUDE.INSTANCE.md CLAUDE.md
 
 # Edit github.config.json with your GitHub username and repository name
 # Example:
@@ -53,7 +84,7 @@ npm install
 npm run update-config
 ```
 
-### 3. Start developing
+#### Start developing
 
 ```bash
 # Start the development server
