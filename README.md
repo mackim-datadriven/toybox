@@ -26,8 +26,8 @@ If not using MCP integration:
 
 ```bash
 # Clone the template repository directly
-git clone https://github.com/jhchoi/toybox-template.git
-cd toybox-template
+git clone https://github.com/jhchoi/toybox-template.git toybox
+cd toybox
 ```
 
 ### 2. Automated setup with Claude Code
