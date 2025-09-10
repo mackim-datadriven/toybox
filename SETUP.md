@@ -67,8 +67,10 @@ ls README.INSTANCE.md
 ```
 
 If it exists:
-1. Replace README.md content with README.INSTANCE.md content
-2. Delete README.INSTANCE.md
+```bash
+rm README.md
+mv README.INSTANCE.md README.md
+```
 
 Check if CLAUDE.INSTANCE.md exists:
 ```bash
@@ -76,8 +78,25 @@ ls CLAUDE.INSTANCE.md
 ```
 
 If it exists:
-1. Replace CLAUDE.md content with CLAUDE.INSTANCE.md content  
-2. Delete CLAUDE.INSTANCE.md
+```bash
+rm CLAUDE.md
+mv CLAUDE.INSTANCE.md CLAUDE.md
+```
+
+### Step 5.1: Update Placeholder Values in Instance Files
+
+After moving the instance files, update any placeholder values with the collected user information:
+
+In README.md, replace any instances of:
+- `YOUR_GITHUB_USERNAME` with the collected GitHub username
+- `YOUR_REPO_NAME` with the collected repository name
+- `https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME/` with the actual Pages URL
+
+In CLAUDE.md, replace any instances of:
+- `YOUR_GITHUB_USERNAME` with the collected GitHub username  
+- `YOUR_REPO_NAME` with the collected repository name
+
+Use sed commands or Edit tool to make these replacements systematically.
 
 ### Step 6: Update Configuration
 
@@ -107,7 +126,7 @@ Expected: Should complete without errors. If it fails, check that all files are 
 
 ### Step 8: Commit Changes
 
-Add all changes and commit:
+Add all changes and commit (including the file replacements from Step 5):
 ```bash
 git add github.config.json
 git add README.md
@@ -118,6 +137,8 @@ git add public/404.html
 git add src/components/AboutPage.tsx
 git add TOYBOX_CONFIG.json
 ```
+
+Note: The README.md and CLAUDE.md additions will include both the deletion of the original template files and the addition of the new instance files with updated placeholder values.
 
 Only add files that were modified. Then commit:
 ```bash
