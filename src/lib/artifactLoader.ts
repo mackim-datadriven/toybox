@@ -30,6 +30,9 @@ export interface ArtifactMetadata {
   folder?: string;
   createdAt: string;
   updatedAt: string;
+  hidden?: boolean;
+  fullscreen?: boolean;
+  underMaintenance?: boolean;
 }
 
 /**
@@ -47,11 +50,18 @@ function getArtifactIdFromPath(path: string): string {
   return path.replace('../artifacts/', '').replace('.tsx', '');
 }
 
+// Cache for all artifacts (including hidden ones)
+let _allArtifactsCache: Map<string, Artifact> | null = null;
+
 /**
- * Load all available artifacts from the static files
+ * Build all artifacts from imports (including hidden ones) - cached
  */
-export function loadArtifacts(): Artifact[] {
-  const artifacts: Artifact[] = [];
+function getAllArtifacts(): Map<string, Artifact> {
+  if (_allArtifactsCache) {
+    return _allArtifactsCache;
+  }
+
+  _allArtifactsCache = new Map();
 
   for (const path in artifactsImports) {
     const importedModule = artifactsImports[path];
@@ -59,22 +69,24 @@ export function loadArtifacts(): Artifact[] {
 
     // Create metadata (either from the module or a placeholder)
     let metadata: ArtifactMetadata;
-    
+
     if (!importedModule.metadata) {
-      console.warn(`Artifact ${artifactId} is missing metadata, using placeholder metadata.`);
+      console.warn(
+        `Artifact ${artifactId} is missing metadata, using placeholder metadata.`
+      );
       metadata = {
         title: artifactId,
         description: 'Auto-generated placeholder description',
         type: 'react',
         tags: ['auto-generated'],
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
     } else {
       metadata = importedModule.metadata;
     }
 
-    artifacts.push({
+    const artifact: Artifact = {
       id: artifactId,
       title: metadata.title,
       description: metadata.description || '',
@@ -84,7 +96,33 @@ export function loadArtifacts(): Artifact[] {
       code: '', // The code is now the component itself, not a string
       createdAt: metadata.createdAt,
       updatedAt: metadata.updatedAt,
-    });
+    };
+
+    _allArtifactsCache.set(artifactId, artifact);
+  }
+
+  return _allArtifactsCache;
+}
+
+/**
+ * Load all available artifacts from the static files (excludes hidden artifacts)
+ */
+export function loadArtifacts(): Artifact[] {
+  const allArtifacts = getAllArtifacts();
+  const artifacts: Artifact[] = [];
+
+  for (const [id, artifact] of allArtifacts) {
+    // Get the original metadata to check if it's hidden
+    const path = `../artifacts/${id}.tsx`;
+    const subdirPath = `../artifacts/${id}/index.tsx`;
+    const importedModule =
+      artifactsImports[path] || artifactsImports[subdirPath];
+
+    if (importedModule?.metadata?.hidden) {
+      continue; // Skip hidden artifacts
+    }
+
+    artifacts.push(artifact);
   }
 
   return artifacts;
@@ -92,21 +130,26 @@ export function loadArtifacts(): Artifact[] {
 
 /**
  * Get a specific artifact by its name
+ * This function allows access to hidden artifacts via direct URL
  */
 export function getArtifact(name: string): { 
   artifact: Artifact | undefined; 
   component: React.ComponentType<any> | undefined;
 } {
-  const artifacts = loadArtifacts();
-  const artifact = artifacts.find(a => a.id === name);
-  let component;
+  // Get artifact from cache (includes hidden artifacts)
+  const allArtifacts = getAllArtifacts();
+  const artifact = allArtifacts.get(name);
 
-  // First try to find as a direct artifact
+  if (!artifact) {
+    return { artifact: undefined, component: undefined };
+  }
+
+  // Get the component from the imports
+  let component;
   const directPath = `../artifacts/${name}.tsx`;
   if (directArtifactsImports[directPath]) {
     component = directArtifactsImports[directPath].default;
   } else {
-    // If not found, try as a subdirectory artifact
     const subdirPath = `../artifacts/${name}/index.tsx`;
     component = subdirArtifactsImports[subdirPath]?.default;
   }

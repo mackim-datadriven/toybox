@@ -6,6 +6,7 @@ import { MermaidRenderer } from './renderers/MermaidRenderer';
 // Import the new artifact loader utility
 import { getArtifact } from '../lib/artifactLoader';
 import { Artifact } from '../lib/types';
+import { MaintenanceBanner } from './MaintenanceBanner';
 
 interface ArtifactRunnerProps {
   standalone?: boolean;
@@ -19,6 +20,8 @@ export function ArtifactRunner({ standalone = false }: ArtifactRunnerProps) {
   const [renderedComponent, setRenderedComponent] = useState<React.ReactNode>(null);
   const [renderError, setRenderError] = useState<string | null>(null);
   const [artifactData, setArtifactData] = useState<Artifact | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isUnderMaintenance, setIsUnderMaintenance] = useState(false);
 
   useEffect(() => {
     const loadArtifact = async () => {
@@ -39,6 +42,26 @@ export function ArtifactRunner({ standalone = false }: ArtifactRunnerProps) {
         }
 
         setArtifactData(artifact);
+        
+        // Get the original metadata to check various preferences
+        const artifactsImports: Record<string, { default: React.ComponentType<any>; metadata?: import('../lib/artifactLoader').ArtifactMetadata }> = {
+          ...import.meta.glob("../artifacts/*.tsx", { eager: true }),
+          ...import.meta.glob("../artifacts/*/index.tsx", { eager: true }),
+        };
+        
+        const directPath = `../artifacts/${artifactName}.tsx`;
+        const subdirPath = `../artifacts/${artifactName}/index.tsx`;
+        const importedModule = artifactsImports[directPath] || artifactsImports[subdirPath];
+        
+        // Check if artifact is under maintenance
+        if (importedModule?.metadata?.underMaintenance) {
+          setIsUnderMaintenance(true);
+        }
+        
+        // Set initial fullscreen state based on metadata (only for standalone mode)
+        if (standalone && importedModule?.metadata?.fullscreen) {
+          setIsFullscreen(true);
+        }
         
         // Render based on artifact type
         try {
@@ -71,7 +94,7 @@ export function ArtifactRunner({ standalone = false }: ArtifactRunnerProps) {
     };
 
     loadArtifact();
-  }, [artifactName]);
+  }, [artifactName, standalone]);
 
   if (loading) {
     return (
@@ -102,26 +125,62 @@ export function ArtifactRunner({ standalone = false }: ArtifactRunnerProps) {
   // For standalone mode, just render the component directly without the gallery wrapper
   if (standalone) {
     return (
-      <div className="p-4 max-w-6xl mx-auto">
-        {renderError ? (
-          <div className="text-center py-8">
-            <div className="text-red-500 mb-4 font-semibold text-lg">Failed to render component</div>
-            <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded font-mono text-sm overflow-auto">
-              {renderError}
+      <div className="h-screen overflow-hidden relative">
+        {/* Fullscreen Toggle Button - Only visible on corner hover */}
+        <div className="absolute top-0 right-0 w-16 h-16 z-50 group">
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="absolute top-4 right-4 bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 rounded-md shadow-lg text-sm flex items-center gap-2 transition-all duration-200 opacity-0 group-hover:opacity-100"
+            title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+          >
+            {isFullscreen ? (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Exit
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                </svg>
+                Fullscreen
+              </>
+            )}
+          </button>
+        </div>
+
+        <div className={`h-full flex flex-col ${isFullscreen ? 'p-0' : 'p-4 max-w-6xl mx-auto'}`}>
+          {isUnderMaintenance && (
+            <MaintenanceBanner className={`mb-4 ${isFullscreen ? 'mx-4 mt-4' : ''}`} />
+          )}
+          {renderError ? (
+            <div className="text-center py-8">
+              <div className="text-red-500 mb-4 font-semibold text-lg">Failed to render component</div>
+              <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded font-mono text-sm overflow-auto">
+                {renderError}
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="bg-white border rounded-lg shadow-sm p-6 mb-6">
-            {renderedComponent}
-          </div>
-        )}
+          ) : (
+            <div className={`flex-1 flex flex-col overflow-hidden ${isFullscreen 
+              ? 'bg-white' 
+              : 'bg-white border rounded-lg shadow-sm p-6'
+            }`}>
+              <div className="h-full overflow-auto">
+                {renderedComponent}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
 
   // For gallery view (default), render with the full gallery wrapper
   return (
-    <div className="p-4 max-w-6xl mx-auto">
+    <div className="h-screen overflow-hidden">
+      <div className="h-full p-4 max-w-6xl mx-auto flex flex-col">
       <div className="flex justify-between items-center mb-4">
         <div>
           <h1 className="text-2xl font-bold mb-1">{artifactData?.title || 'Untitled Artifact'}</h1>
@@ -163,6 +222,10 @@ export function ArtifactRunner({ standalone = false }: ArtifactRunnerProps) {
         </div>
       </div>
       
+      {isUnderMaintenance && (
+        <MaintenanceBanner className="mb-4" />
+      )}
+      
       {artifactData?.description && (
         <div className="bg-gray-50 border rounded p-4 mb-4">
           <p>{artifactData.description}</p>
@@ -179,7 +242,7 @@ export function ArtifactRunner({ standalone = false }: ArtifactRunnerProps) {
         </div>
       )}
       
-      <div className="bg-white border rounded-lg shadow-sm p-6 mb-6">
+      <div className="bg-white border rounded-lg shadow-sm p-6 flex-1 flex flex-col overflow-hidden">
         {renderError ? (
           <div className="text-center py-8">
             <div className="text-red-500 mb-4 font-semibold text-lg">Failed to render component</div>
@@ -188,19 +251,20 @@ export function ArtifactRunner({ standalone = false }: ArtifactRunnerProps) {
             </div>
           </div>
         ) : (
-          <div className="artifact-container">
+          <div className="artifact-container h-full overflow-auto">
             {renderedComponent}
           </div>
         )}
       </div>
       
-      <div className="mt-8 text-center">
+      <div className="mt-4 text-center">
         <Link
           to="/"
           className="text-blue-500 hover:text-blue-700"
         >
           ← Return to Portfolio Gallery
         </Link>
+      </div>
       </div>
     </div>
   );
