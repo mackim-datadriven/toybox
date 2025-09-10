@@ -25,8 +25,14 @@ If not using MCP integration:
 ### 1. Clone this template repository
 
 ```bash
-# Clone the template repository directly
+# Clone the template repository directly (HTTPS)
 git clone https://github.com/jhchoi/toybox-template.git toybox
+cd toybox
+```
+
+```bash
+# Or using SSH
+git clone git@github.com:jhchoi/toybox-template.git toybox
 cd toybox
 ```
 
